@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imran Ali | Full Stack & AI Engineer Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons for graphics & socials -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#080810',
+                            dark: '#0f0f1e',
+                            card: 'rgba(20, 20, 35, 0.7)',
+                            accent: '#3b82f6',
+                            neonGreen: '#10b981',
+                            neonPurple: '#8b5cf6',
+                            textMuted: '#94a3b8'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 15px rgba(59, 130, 246, 0.5)',
+                        'neon-purple': '0 0 15px rgba(139, 92, 246, 0.4)',
+                        'neon-green': '0 0 15px rgba(16, 185, 129, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #080810;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080810;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1b4b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+        .glass {
+            background: rgba(15, 15, 30, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .neon-border {
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neon-border:hover {
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+        }
+        /* Dynamic neon gradient text */
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- WebGL Background Canvas -->
+    <canvas id="three-bg" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-60"></canvas>
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#hero" class="flex items-center space-x-2 group">
+                <span class="text-2xl font-black tracking-wider text-white">IMRAN<span class="text-brand-accent">.</span>ALI</span>
+            </a>
+            
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide">
+                <a href="#about" class="text-slate-300 hover:text-white transition-colors">About</a>
+                <a href="#experience" class="text-slate-300 hover:text-white transition-colors">Experience</a>
+                <a href="#projects" class="text-slate-300 hover:text-white transition-colors">Projects</a>
+                <a href="#publications" class="text-slate-300 hover:text-white transition-colors">Research</a>
+                <a href="#skills" class="text-slate-300 hover:text-white transition-colors">Skills</a>
+                <a href="#matchmaker" class="text-blue-400 hover:text-blue-300 transition-colors">✨ AI Matchmaker</a>
+                <a href="#contact" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-neon-blue">Let's Connect</a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden glass border-b border-white/5 px-4 py-4 space-y-3">
+            <a href="#about" class="block text-slate-300 hover:text-white py-2" onclick="toggleMobileMenu()">About</a>
+            <a href="#experience" class="block text-slate-300 hover:text-white py-2" onclick="toggleMobileMenu()">Experience</a>
+            <a href="#projects" class="block text-slate-300 hover:text-white py-2" onclick="toggleMobileMenu()">Projects</a>
+            <a href="#publications" class="block text-slate-300 hover:text-white py-2" onclick="toggleMobileMenu()">Research</a>
+            <a href="#skills" class="block text-slate-300 hover:text-white py-2" onclick="toggleMobileMenu()">Skills</a>
+            <a href="#matchmaker" class="block text-blue-400 hover:text-blue-350 py-2" onclick="toggleMobileMenu()">✨ AI Matchmaker</a>
+            <a href="#contact" class="block text-center py-2 rounded-lg bg-blue-600 text-white" onclick="toggleMobileMenu()">Contact Me</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center pt-24 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Hero Text Details -->
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-xs sm:text-sm text-blue-400">
+                    <span class="w-2 h-2 rounded-full bg-brand-neonGreen animate-pulse"></span>
+                    <span>Lecturer at MiTE, MAJU & SZABIST</span>
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight">
+                    Hi, I am <br>
+                    <span class="text-gradient">Imran Ali</span>
+                </h1>
+                
+                <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold text-slate-300 font-mono">
+                    &lt;<span id="typed-text">Full Stack & AI Engineer</span>/&gt;
+                </h2>
+                
+                <p class="text-slate-400 max-w-xl text-base sm:text-lg mx-auto lg:mx-0 leading-relaxed">
+                    Bridging modern artificial intelligence & machine learning frameworks with highly scalable, robust web architectures. Computer Science Lecturer at Millennium Institute of Technology and Entrepreneurship (MiTE).
+                </p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                    <a href="#contact" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all transform hover:-translate-y-0.5 text-center shadow-neon-blue">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Get In Touch
+                    </a>
+                    <a href="https://wa.me/923042576124" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all border border-emerald-500/35 text-center shadow-neon-green">
+                        <i class="fa-brands fa-whatsapp mr-2 text-lg"></i> WhatsApp Me
+                    </a>
+                </div>
+
+                <!-- Quick socials & Resume access -->
+                <div class="flex items-center justify-center lg:justify-start space-x-6 pt-6 text-slate-400 text-2xl">
+                    <a href="https://github.com/imran-Ali11" target="_blank" class="hover:text-white transition-colors" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/imran-ali-665964214/" target="_blank" class="hover:text-blue-400 transition-colors" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="mailto:imran.ali313924@gmail.com" class="hover:text-red-400 transition-colors" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                    <a href="tel:+923042576124" class="hover:text-emerald-400 transition-colors" title="Call"><i class="fa-solid fa-phone"></i></a>
+                </div>
+            </div>
+
+            <!-- Profile Frame (Kept strictly upright with cyber-styled borders) -->
+            <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                <div class="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-3xl p-1 bg-gradient-to-tr from-blue-500 via-purple-500 to-emerald-500 shadow-neon-blue transition-all duration-500 hover:shadow-neon-purple">
+                    <!-- Upright Static Container to prevent rotation/tilt side-effects -->
+                    <div class="w-full h-full rounded-[22px] bg-brand-black overflow-hidden flex items-center justify-center relative group">
+                        <img src="profile.jpeg" alt="Imran Ali Profile" class="w-full h-full object-cover object-center select-none duration-500 group-hover:scale-105" 
+                             >
+                        
+                        <!-- Premium cyber overlay styling -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-black/40 via-transparent to-transparent opacity-60 pointer-events-none"></div>
+                    </div>
+                    
+                    <!-- Decorative Floating Tech Badges -->
+                    <div class="absolute -top-4 -right-4 w-12 h-12 rounded-full glass flex items-center justify-center border border-purple-500/50 shadow-neon-purple text-purple-400 animate-bounce">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 w-12 h-12 rounded-full glass flex items-center justify-center border border-emerald-500/50 shadow-neon-green text-emerald-400 animate-[bounce_2s_infinite]">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive AI Agent (Chatbot UI embedded) -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Floating Chat Icon -->
+        <button id="chat-toggle-btn" class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 flex items-center justify-center shadow-neon-blue transition-all transform hover:scale-110 active:scale-95">
+            <i class="fa-solid fa-robot text-2xl text-white"></i>
+            <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
+            </span>
+        </button>
+
+        <!-- Main Chat Box Container -->
+        <div id="chat-box" class="hidden absolute bottom-20 right-0 w-96 max-w-[calc(100vw-2rem)] h-[480px] rounded-2xl glass border border-white/10 flex flex-col overflow-hidden shadow-2xl transition-all duration-300 translate-y-4">
+            <!-- Header -->
+            <div class="p-4 bg-gradient-to-r from-blue-900/60 to-purple-900/60 border-b border-white/5 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-blue-400 text-lg">
+                        <i class="fa-solid fa-microchip animate-spin-slow"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">✨ Imran's Live Gemini Agent</h4>
+                        <p class="text-[10px] text-brand-neonGreen flex items-center">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-neonGreen mr-1 inline-block animate-pulse"></span> Dynamic LLM Active
+                        </p>
+                    </div>
+                </div>
+                <button id="chat-close-btn" class="text-slate-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Messages Stream -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 font-sans text-xs sm:text-sm">
+                <div class="flex items-start space-x-2">
+                    <div class="p-2 bg-blue-900/30 rounded-lg text-slate-300">
+                        Hello! I am Imran's live smart representative powered by **Gemini 2.5**. Ask me anything about his coding background, academic papers, ongoing projects, or scheduling classes.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="p-2 border-t border-white/5 bg-brand-black/40 flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                <button onclick="askGeminiAgent('What are his top programming languages and tech stacks?')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] sm:text-xs text-blue-300 transition-colors">✨ Tech Skills</button>
+                <button onclick="askGeminiAgent('Where does he lecture and teach currently?')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] sm:text-xs text-blue-300 transition-colors">✨ Current Jobs</button>
+                <button onclick="askGeminiAgent('Tell me about his MS/BS educational timeline')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] sm:text-xs text-blue-300 transition-colors">✨ Academics</button>
+                <button onclick="askGeminiAgent('What publication or journal papers has he written?')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] sm:text-xs text-blue-300 transition-colors">✨ Publications</button>
+            </div>
+
+            <!-- Text Input Container -->
+            <div class="p-3 bg-brand-dark/90 border-t border-white/5 flex items-center space-x-2">
+                <input type="text" id="chat-input" placeholder="Ask Gemini LLM Agent..." class="flex-1 bg-white/5 text-xs sm:text-sm text-white placeholder-slate-500 px-3 py-2.5 rounded-xl border border-white/10 focus:outline-none focus:border-blue-500">
+                <button id="chat-send-btn" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 rounded-xl flex items-center justify-center text-white text-sm transition-all shadow-neon-blue">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About & Education Section -->
+    <section id="about" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <!-- Academic Profile Summary -->
+            <div class="lg:col-span-5 space-y-6">
+                <h3 class="text-xs font-bold tracking-widest text-blue-400 uppercase">Profile Summary</h3>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Building Intelligent Web Systems</h2>
+                <p class="text-slate-400 leading-relaxed text-sm sm:text-base">
+                    Equipped with a Master of Science in Computer Science and an active history in AI, ML, and Data Science. I bridge advanced academic insights with production-grade technology pipelines. I construct scalable web applications with high visual dynamics and back them up with complex neural architectures.
+                </p>
+                <div class="p-4 rounded-2xl glass border border-emerald-500/20 bg-emerald-950/10 flex items-start space-x-3">
+                    <i class="fa-solid fa-chalkboard-user text-emerald-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-white text-sm sm:text-base">Active Educator & Mentor</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-1">Holding multiple concurrently active CS lecturer roles in computing programs across leading public and private academies, including MiTE and MAJU.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Details Card Array -->
+            <div class="lg:col-span-7 space-y-6">
+                <h3 class="text-xs font-bold tracking-widest text-purple-400 uppercase">Education Milestones</h3>
+                
+                <div class="space-y-4">
+                    <!-- MS Degree -->
+                    <div class="neon-border glass p-6 rounded-2xl flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+                                <i class="fa-solid fa-graduation-cap text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base sm:text-lg">Master of Science in Computer Science</h4>
+                                <p class="text-slate-300 text-sm mt-0.5">Mohammad Ali Jinnah University, Karachi, Pakistan</p>
+                                <p class="text-slate-500 text-xs mt-2 flex items-center">
+                                    <i class="fa-regular fa-calendar mr-1.5"></i> September 2023 — June 2025
+                                </p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs text-purple-400 font-semibold shrink-0">Postgrad MS</span>
+                    </div>
+
+                    <!-- BS Degree -->
+                    <div class="neon-border glass p-6 rounded-2xl flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+                                <i class="fa-solid fa-school text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base sm:text-lg">Bachelor of Science in Computer Science</h4>
+                                <p class="text-slate-300 text-sm mt-0.5">Sukkur IBA University, Sukkur, Pakistan</p>
+                                <p class="text-slate-500 text-xs mt-2 flex items-center">
+                                    <i class="fa-regular fa-calendar mr-1.5"></i> August 2018 — September 2023
+                                </p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 font-semibold shrink-0">Undergrad BS</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Professional Experience Timeline -->
+    <section id="experience" class="py-24 px-4 sm:px-6 lg:px-8 bg-brand-dark/40 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center space-y-3 mb-16">
+                <h3 class="text-xs font-bold tracking-widest text-blue-400 uppercase">Career Path</h3>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Professional Experience</h2>
+                <p class="text-slate-400 max-w-xl mx-auto text-sm sm:text-base">Delivering core courses in software engineering, full stack development, and AI models across Karachi's premier institutes.</p>
+            </div>
+
+            <!-- Interactive Timeline Layout -->
+            <div class="relative border-l border-white/10 ml-4 md:ml-32 space-y-12">
+                
+                <!-- MiTE Computer Science Lecturer -->
+                <div class="relative pl-8 sm:pl-12 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-brand-black border-2 border-amber-500 flex items-center justify-center text-xs text-amber-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border border-white/5 space-y-3 hover:border-amber-500/30 transition-all shadow-neon-purple">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-amber-400 font-mono tracking-wider">Current</span>
+                                <h4 class="font-bold text-white text-lg sm:text-xl mt-1">Computer Science Lecturer</h4>
+                                <p class="text-slate-400 text-sm">Millennium Institute of Technology and Entrepreneurship (MiTE), Karachi</p>
+                            </div>
+                            <span class="self-start sm:self-auto px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-xs text-amber-400 font-medium">Academics</span>
+                        </div>
+                        <ul class="space-y-2 text-slate-400 text-xs sm:text-sm list-disc pl-4">
+                            <li>Deliver advanced computer science curriculum focusing on modern development architectures, software patterns, and core computing theories.</li>
+                            <li>Develop high-impact labs and interactive coding workspaces to foster developer environments for next-gen engineers.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- MAJU Lecturer -->
+                <div class="relative pl-8 sm:pl-12 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-brand-black border-2 border-blue-500 flex items-center justify-center text-xs text-blue-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border border-white/5 space-y-3 hover:border-blue-500/30 transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-blue-400 font-mono tracking-wider">Feb 2024 - Present</span>
+                                <h4 class="font-bold text-white text-lg sm:text-xl mt-1">Lecturer (Full-time)</h4>
+                                <p class="text-slate-400 text-sm">Mohammad Ali Jinnah University (MAJU), Karachi</p>
+                            </div>
+                            <span class="self-start sm:self-auto px-2.5 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 font-medium">Academics</span>
+                        </div>
+                        <ul class="space-y-2 text-slate-400 text-xs sm:text-sm list-disc pl-4">
+                            <li>Teach AI, Machine Learning, Data Science, Web Technologies, Information & Network Security, and DSA.</li>
+                            <li>Design course curricula, complex assignments, and custom industry-aligned projects.</li>
+                            <li>Mentor students in hands-on application development, algorithmic execution, and academic research.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SZABIST Visiting Faculty -->
+                <div class="relative pl-8 sm:pl-12 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-brand-black border-2 border-purple-500 flex items-center justify-center text-xs text-purple-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border border-white/5 space-y-3 hover:border-purple-500/30 transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-purple-400 font-mono tracking-wider">2025 - Present</span>
+                                <h4 class="font-bold text-white text-lg sm:text-xl mt-1">Visiting Faculty</h4>
+                                <p class="text-slate-400 text-sm">SZABIST, Karachi Campus</p>
+                            </div>
+                            <span class="self-start sm:self-auto px-2.5 py-1 rounded bg-purple-500/10 border border-purple-500/20 text-xs text-purple-400 font-medium">Visiting Faculty</span>
+                        </div>
+                        <ul class="space-y-2 text-slate-400 text-xs sm:text-sm list-disc pl-4">
+                            <li>Delivering comprehensive lectures and evaluating software engineering & database frameworks.</li>
+                            <li>Conducting analytical evaluations on distributed modern system designs.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- NAVTTC ML & MERN Instructor -->
+                <div class="relative pl-8 sm:pl-12 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-brand-black border-2 border-emerald-500 flex items-center justify-center text-xs text-emerald-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border border-white/5 space-y-3 hover:border-emerald-500/30 transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-400 font-mono tracking-wider">April 2025 - Present</span>
+                                <h4 class="font-bold text-white text-lg sm:text-xl mt-1">Machine Learning & MERN-Stack Instructor</h4>
+                                <p class="text-slate-400 text-sm">NAVTTC, Karachi, Pakistan</p>
+                            </div>
+                            <span class="self-start sm:self-auto px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">Instructor Role</span>
+                        </div>
+                        <ul class="space-y-2 text-slate-400 text-xs sm:text-sm list-disc pl-4">
+                            <li>Providing active vocational lab instruction for Machine Learning protocols and deep web systems.</li>
+                            <li>Coaching students in advanced model architecture (TensorFlow, Keras) and complete MERN application engineering (MongoDB, Express, React, Node).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Software Engineer Part-time -->
+                <div class="relative pl-8 sm:pl-12 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-brand-black border-2 border-slate-500 flex items-center justify-center text-xs text-slate-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border border-white/5 space-y-3 hover:border-slate-500/30 transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 font-mono tracking-wider">Sep 2023 - Jan 2024</span>
+                                <h4 class="font-bold text-white text-lg sm:text-xl mt-1">Software Engineer (Part-time)</h4>
+                                <p class="text-slate-400 text-sm">The Software House (Remote)</p>
+                            </div>
+                            <span class="self-start sm:self-auto px-2.5 py-1 rounded bg-white/5 border border-white/10 text-xs text-slate-300 font-medium">Industry</span>
+                        </div>
+                        <ul class="space-y-2 text-slate-400 text-xs sm:text-sm list-disc pl-4">
+                            <li>Engineered LMS and customized AI dashboard metrics using React.js/Next.js with Redux.</li>
+                            <li>Dramatically elevated Next.js SSR configurations and API integrations.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW INTERACTIVE GEMINI SECTION: AI Matchmaker -->
+    <section id="matchmaker" class="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-brand-black to-brand-dark/90 relative overflow-hidden border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            
+            <div class="lg:col-span-5 space-y-6">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-900/40 border border-purple-500/30 text-xs text-purple-400">
+                    <span class="w-2 h-2 rounded-full bg-brand-neonPurple animate-ping"></span>
+                    <span>Live Gemini 2.5 Integration</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">✨ AI Project Matchmaker</h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    Have a unique project idea, startup initiative, or complex platform requirement? Type it in below. The integrated **Gemini LLM** will dynamically assess Imran's technical capabilities (AI models, MERN stack, secure networks) to generate a custom system roadmap and integration plan!
+                </p>
+                <div class="p-4 rounded-xl glass border border-blue-500/25 text-blue-400 flex items-start space-x-3 text-sm">
+                    <i class="fa-solid fa-sparkles text-xl mt-0.5 shrink-0"></i>
+                    <span>This drafts a complete visual architecture blueprint tailored to your industry instantly!</span>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7">
+                <div class="neon-border glass p-6 sm:p-8 rounded-2xl space-y-6">
+                    <div class="space-y-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-300">Target Industry</label>
+                            <select id="matchmaker-industry" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500">
+                                <option value="Fintech & Decentralized Identity" class="bg-brand-black text-white">Fintech / Blockchain Identity</option>
+                                <option value="Healthcare AI & Computer Vision" class="bg-brand-black text-white">Healthcare AI / Clinical Vision</option>
+                                <option value="Education, LMS & E-learning Systems" class="bg-brand-black text-white">EdTech / Smart LMS Platform</option>
+                                <option value="IoT, Smart Automation & Drones" class="bg-brand-black text-white">IoT / Embedded Automation</option>
+                                <option value="General Software & Custom SaaS" class="bg-brand-black text-white">Custom SaaS / MERN Platforms</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-300">Describe Your Project Concept</label>
+                            <textarea id="matchmaker-concept" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500" placeholder="e.g., A mobile medical scan validator that flags anomalies and updates on-chain records..."></textarea>
+                        </div>
+                        
+                        <button onclick="generateAIMatchmakerProposal()" class="w-full py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold transition-all shadow-neon-blue flex items-center justify-center gap-2">
+                            <span>✨ Generate Custom Collaboration Blueprint</span>
+                            <span id="matchmaker-spinner" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Matchmaker Result Window -->
+                    <div id="matchmaker-result-box" class="hidden mt-6 p-5 rounded-xl border border-white/5 bg-brand-black/50 space-y-3 max-h-[350px] overflow-y-auto">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                            <h4 class="font-bold text-xs sm:text-sm text-brand-neonGreen flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check"></i> Customized Integration Proposal
+                            </h4>
+                            <span class="text-[10px] text-slate-500 font-mono">Gemini 2.5 Engine</span>
+                        </div>
+                        <div id="matchmaker-result-text" class="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line font-sans">
+                            <!-- Populated dynamically via Gemini -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Projects Area -->
+    <section id="projects" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center space-y-3 mb-16">
+            <h3 class="text-xs font-bold tracking-widest text-emerald-400 uppercase">My Creations</h3>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Featured Project Portfolio</h2>
+            <p class="text-slate-400 max-w-xl mx-auto text-sm sm:text-base">Filter through software designs across blockchain, computer vision, and machine learning.</p>
+            
+            <!-- Filters System -->
+            <div class="flex flex-wrap items-center justify-center gap-2 pt-6">
+                <button onclick="filterProjects('all')" class="project-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold glass border border-white/10 text-white hover:bg-blue-600 hover:border-blue-600 transition-all duration-300">All</button>
+                <button onclick="filterProjects('ai')" class="project-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold glass border border-white/10 text-slate-400 hover:text-white transition-all duration-300">AI & Deep Learning</button>
+                <button onclick="filterProjects('fullstack')" class="project-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold glass border border-white/10 text-slate-400 hover:text-white transition-all duration-300">Full Stack & Mobile</button>
+                <button onclick="filterProjects('iot')" class="project-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold glass border border-white/10 text-slate-400 hover:text-white transition-all duration-300">IoT & Edge</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Project 1: Fake News Detection -->
+            <div class="project-card neon-border glass rounded-2xl overflow-hidden flex flex-col h-full transform transition duration-300 hover:-translate-y-2" data-category="ai">
+                <div class="h-48 bg-gradient-to-br from-indigo-900/80 to-slate-900 flex items-center justify-center p-6 text-indigo-400 border-b border-white/5 relative">
+                    <i class="fa-solid fa-newspaper text-6xl"></i>
+                    <span class="absolute top-4 right-4 px-2 py-0.5 rounded bg-blue-500/10 text-[10px] text-blue-400 font-mono">Jan - Mar 2025</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-white text-lg sm:text-xl">Urdu Fake News Detector</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm">Real-time verification system executing Machine Learning and Deep Learning architectures for detection of fake news within Urdu articles.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-4">
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">Python</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">TensorFlow</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">NLP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2: Real-Time Chat App -->
+            <div class="project-card neon-border glass rounded-2xl overflow-hidden flex flex-col h-full transform transition duration-300 hover:-translate-y-2" data-category="fullstack">
+                <div class="h-48 bg-gradient-to-br from-blue-900/80 to-slate-900 flex items-center justify-center p-6 text-blue-400 border-b border-white/5 relative">
+                    <i class="fa-solid fa-comments text-6xl"></i>
+                    <span class="absolute top-4 right-4 px-2 py-0.5 rounded bg-blue-500/10 text-[10px] text-blue-400 font-mono">May - Jul 2022</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-white text-lg sm:text-xl">Real-Time Mobile Chat</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm">Android communication app built with Firebase support, handling strict secure authentication protocols, custom real-time messaging, and profile customization.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-4">
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">Java</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">Firebase</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">XML Layout</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3: KYC Smart Contracts -->
+            <div class="project-card neon-border glass rounded-2xl overflow-hidden flex flex-col h-full transform transition duration-300 hover:-translate-y-2" data-category="fullstack">
+                <div class="h-48 bg-gradient-to-br from-violet-950 to-slate-900 flex items-center justify-center p-6 text-violet-400 border-b border-white/5 relative">
+                    <i class="fa-solid fa-shield-halved text-6xl"></i>
+                    <span class="absolute top-4 right-4 px-2 py-0.5 rounded bg-blue-500/10 text-[10px] text-blue-400 font-mono">Jan - Apr 2023</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-white text-lg sm:text-xl">On-Chain KYC Verification</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm">Solidity-backed smart contract and React framework executing distributed identity management and decentralized secure user onboarding.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-4">
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">Solidity</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">React.js</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">Web3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 4: Face Mask Detection -->
+            <div class="project-card neon-border glass rounded-2xl overflow-hidden flex flex-col h-full transform transition duration-300 hover:-translate-y-2" data-category="ai">
+                <div class="h-48 bg-gradient-to-br from-emerald-900/80 to-slate-900 flex items-center justify-center p-6 text-emerald-400 border-b border-white/5 relative">
+                    <i class="fa-solid fa-head-side-mask text-6xl"></i>
+                    <span class="absolute top-4 right-4 px-2 py-0.5 rounded bg-blue-500/10 text-[10px] text-blue-400 font-mono">Feb - Mar 2022</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-white text-lg sm:text-xl">Face Mask Computer Vision</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm">Real-time facial mask evaluation pipeline using localized computer vision. Operates OpenCV logic combined with convolutional layers.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-4">
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">OpenCV</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">TensorFlow</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">Pandas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 5: Gesture Light Control -->
+            <div class="project-card neon-border glass rounded-2xl overflow-hidden flex flex-col h-full transform transition duration-300 hover:-translate-y-2" data-category="iot">
+                <div class="h-48 bg-gradient-to-br from-amber-900/80 to-slate-900 flex items-center justify-center p-6 text-amber-400 border-b border-white/5 relative">
+                    <i class="fa-solid fa-hand text-6xl"></i>
+                    <span class="absolute top-4 right-4 px-2 py-0.5 rounded bg-blue-500/10 text-[10px] text-blue-400 font-mono">Jun - Jul 2023</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-white text-lg sm:text-xl">Gesture Light System</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm">Smart automation and control via vision-based hand recognition coordinates, integrated with a local NodeMCU/GSM hardware circuit.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-4">
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">IoT</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">OpenCV</span>
+                        <span class="px-2 py-0.5 rounded bg-brand-black text-[10px] text-slate-300 border border-white/5">NodeMCU</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research and Publications -->
+    <section id="publications" class="py-24 px-4 sm:px-6 lg:px-8 bg-brand-dark/40 border-y border-white/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-4 space-y-6">
+                <h3 class="text-xs font-bold tracking-widest text-purple-400 uppercase">Scientific Research</h3>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Academic Journals</h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    Investigating drone delivery security, ML-based network intrusion detection, and cryptography frameworks. Active writer focusing on highly scalable, hardened modern architectures.
+                </p>
+                <div class="p-4 rounded-xl glass border border-purple-500/20 text-purple-400 flex items-center space-x-3 text-sm">
+                    <i class="fa-solid fa-magnifying-glass-chart text-xl"></i>
+                    <span>Currently researching UAV Drone Delivery Operations Security in remote terrains.</span>
+                </div>
+            </div>
+
+            <!-- Publications Listing -->
+            <div class="lg:col-span-8 space-y-6">
+                <!-- Published Paper -->
+                <div class="neon-border glass p-6 sm:p-8 rounded-2xl space-y-4">
+                    <div class="flex items-center space-x-2 text-xs text-brand-neonGreen">
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25">Published</span>
+                        <span class="font-mono">April 2025</span>
+                    </div>
+                    <h4 class="font-bold text-white text-lg sm:text-xl">Security and Privacy Challenges in 5G Networks: Threats, Solutions, and Future Directions</h4>
+                    <p class="text-slate-400 text-xs sm:text-sm">
+                        Analyzed 5G protocol weaknesses, designed mitigation approaches using complex smart-contract frameworks combined with localized artificial intelligence detectors, and planned path directives for B5G architectures.
+                    </p>
+                    <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs sm:text-sm">
+                        <span class="text-purple-400 font-semibold flex items-center"><i class="fa-solid fa-file-invoice mr-1.5"></i> ICBMC Journal</span>
+                        <a href="#" class="text-slate-300 hover:text-white flex items-center gap-1">Read Journal <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></a>
+                    </div>
+                </div>
+
+                <!-- Ongoing Work -->
+                <div class="neon-border glass p-6 sm:p-8 rounded-2xl space-y-4">
+                    <div class="flex items-center space-x-2 text-xs text-amber-400">
+                        <span class="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/25">Ongoing Research</span>
+                    </div>
+                    <h4 class="font-bold text-white text-lg sm:text-xl">Benchmarking ML-Based Intrusion Detection Systems for Secure Drone Delivery Operations in Remote Terrains</h4>
+                    <p class="text-slate-400 text-xs sm:text-sm">
+                        Constructing complex machine learning and deep learning benchmarking architectures evaluated across the Augmented_CIC-IDS2017 dataset to optimize secure unmanned UAV operations.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Technical Skills Section -->
+    <section id="skills" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center space-y-3 mb-16">
+            <h3 class="text-xs font-bold tracking-widest text-blue-400 uppercase">Core Competencies</h3>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Full Stack & AI Expertise</h2>
+            <p class="text-slate-400 max-w-xl mx-auto text-sm sm:text-base">An immersive mapping of software layers, modeling modules, database architecture, and deployment protocols.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Skill Matrix Categories -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Row: Programming Languages -->
+                <div class="glass p-5 rounded-2xl border border-white/5 space-y-3">
+                    <h4 class="font-bold text-blue-400 text-sm tracking-wide font-mono flex items-center gap-2">
+                        <i class="fa-solid fa-terminal"></i> Programming Languages
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">JavaScript</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">TypeScript</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Python</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Java</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">C++</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Solidity</span>
+                    </div>
+                </div>
+
+                <!-- Row: AI & Machine Learning -->
+                <div class="glass p-5 rounded-2xl border border-white/5 space-y-3">
+                    <h4 class="font-bold text-purple-400 text-sm tracking-wide font-mono flex items-center gap-2">
+                        <i class="fa-solid fa-brain"></i> AI & Machine Learning
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">TensorFlow</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Keras</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Scikit-learn</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">PyTorch</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">OpenCV</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">ChatGPT API</span>
+                    </div>
+                </div>
+
+                <!-- Row: Front-End Tech -->
+                <div class="glass p-5 rounded-2xl border border-white/5 space-y-3">
+                    <h4 class="font-bold text-brand-neonGreen text-sm tracking-wide font-mono flex items-center gap-2">
+                        <i class="fa-solid fa-window-maximize"></i> Front-End Frameworks
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">React.js</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Next.js</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Tailwind CSS</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Redux Toolkit</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Chakra UI</span>
+                    </div>
+                </div>
+
+                <!-- Row: Back-End & DB -->
+                <div class="glass p-5 rounded-2xl border border-white/5 space-y-3">
+                    <h4 class="font-bold text-amber-400 text-sm tracking-wide font-mono flex items-center gap-2">
+                        <i class="fa-solid fa-server"></i> Backend & Databases
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Node.js</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Express.js</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">GraphQL</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">MongoDB</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">MySQL</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-brand-black/60 text-xs sm:text-sm text-slate-200 border border-white/5">Firebase</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3D Skill Sphere Viewport Card -->
+            <div class="lg:col-span-5 h-[400px] rounded-3xl glass border border-white/10 relative overflow-hidden group flex flex-col items-center justify-between p-6">
+                <div class="absolute inset-0 bg-gradient-to-t from-blue-950/20 via-transparent to-transparent pointer-events-none"></div>
+                <div class="text-center space-y-1 relative z-10 pointer-events-none">
+                    <h4 class="font-bold text-white text-base">3D Interactive Skill Sphere</h4>
+                    <p class="text-xs text-slate-400">Drag/spin with mouse to interact with core technologies</p>
+                </div>
+                <!-- 3D Skill Canvas -->
+                <canvas id="skill-sphere-canvas" class="w-full h-64 shrink-0 cursor-grab active:cursor-grabbing"></canvas>
+                <div class="flex items-center space-x-2 text-[10px] text-blue-400/80 uppercase font-mono tracking-wider pointer-events-none">
+                    <i class="fa-solid fa-arrow-pointer animate-pulse"></i>
+                    <span>Interact Sphere</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Connect / Contact Section -->
+    <section id="contact" class="py-24 px-4 sm:px-6 lg:px-8 bg-brand-dark/40 relative">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-5 space-y-6">
+                <h3 class="text-xs font-bold tracking-widest text-blue-400 uppercase">Say Hello</h3>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Let's Design Your Solution Together</h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    Have an upcoming web framework that requires deep learning support, customized MERN services, or physical automation configurations? Contact me directly!
+                </p>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Email Direct</p>
+                            <a href="mailto:imran.ali313924@gmail.com" class="text-white hover:text-blue-400 font-semibold text-sm sm:text-base transition-colors">imran.ali313924@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">WhatsApp Channel</p>
+                            <a href="https://wa.me/923042576124" target="_blank" class="text-white hover:text-emerald-400 font-semibold text-sm sm:text-base transition-colors">+92 3042576124</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Location</p>
+                            <p class="text-white font-semibold text-sm sm:text-base">Karachi, Sindh, Pakistan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Clean Form Layout -->
+            <div class="lg:col-span-7">
+                <div class="neon-border glass p-6 sm:p-8 rounded-2xl">
+                    <form id="contact-form" onsubmit="handleForm(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-300">Your Name</label>
+                                <input type="text" id="form-name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500" placeholder="John Doe">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-300">Your Email</label>
+                                <input type="email" id="form-email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500" placeholder="john@example.com">
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-300">Subject</label>
+                            <input type="text" id="form-subject" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500" placeholder="Project Opportunity">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-300">Message</label>
+                            <textarea id="form-message" rows="5" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500" placeholder="Type your message here..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-neon-blue">
+                            Send Secure Message
+                        </button>
+                    </form>
+                    <!-- Form Response Toast UI -->
+                    <div id="form-toast" class="hidden mt-4 p-4 rounded-xl border flex items-center gap-3 text-xs sm:text-sm"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 sm:px-6 lg:px-8 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <span class="text-xl font-black tracking-wider text-white">IMRAN<span class="text-brand-accent">.</span>ALI</span>
+                <p class="text-slate-500 text-xs mt-1">© 2026 Imran Ali. All Rights Reserved.</p>
+            </div>
+            <div class="flex items-center space-x-6 text-sm text-slate-400">
+                <a href="#about" class="hover:text-white transition-colors">About</a>
+                <a href="#projects" class="hover:text-white transition-colors">Projects</a>
+                <a href="#publications" class="hover:text-white transition-colors">Publications</a>
+                <a href="#skills" class="hover:text-white transition-colors">Skills</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ThreeJS & Web Interaction Scripts -->
+    <script>
+        // 0. MANDATORY GEMINI LLM CALL API INTEGRATION
+        const apiKey = ""; // Left blank as per strict preview system directives
+        
+        async function callGemini(prompt, systemInstruction = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+            if (systemInstruction) {
+                payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+            }
+
+            let delay = 1000;
+            // Retry up to 5 times with exponential backoff
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP status: ${response.status}`);
+                    const data = await response.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) return text;
+                    throw new Error("Invalid output layout");
+                } catch (err) {
+                    if (i === 4) throw err;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // 1. Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+
+        // 2. Typing Animation
+        const roles = ["Full Stack Software Engineer", "Artificial Intelligence Expert", "Machine Learning Researcher", "MERN Stack Specialist"];
+        let currentRoleIdx = 0;
+        let currentCharIdx = 0;
+        let isDeleting = false;
+        const typedTextEl = document.getElementById('typed-text');
+        
+        function type() {
+            const currentWord = roles[currentRoleIdx];
+            if (isDeleting) {
+                typedTextEl.textContent = currentWord.substring(0, currentCharIdx - 1);
+                currentCharIdx--;
+            } else {
+                typedTextEl.textContent = currentWord.substring(0, currentCharIdx + 1);
+                currentCharIdx++;
+            }
+
+            let typeSpeed = 100;
+            if (isDeleting) typeSpeed /= 2;
+
+            if (!isDeleting && currentCharIdx === currentWord.length) {
+                typeSpeed = 2000; // Pause at full word
+                isDeleting = true;
+            } else if (isDeleting && currentCharIdx === 0) {
+                isDeleting = false;
+                currentRoleIdx = (currentRoleIdx + 1) % roles.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        // Start typing on window loaded
+        window.addEventListener('load', () => {
+            type();
+            initThreeBackground();
+            initThreeSkillSphere();
+        });
+
+        // 3. Project Filter System Logic
+        function filterProjects(category) {
+            // Update filter buttons styling
+            const buttons = document.querySelectorAll('.project-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'border-blue-600', 'text-white');
+                btn.classList.add('text-slate-400');
+            });
+
+            // Target correct event btn
+            event.target.classList.add('bg-blue-600', 'border-blue-600', 'text-white');
+            event.target.classList.remove('text-slate-400');
+
+            // Toggle project card viewports
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 4. Contact Form Handler (No browser alerts, nice inner message alerts)
+        function handleForm(e) {
+            e.preventDefault();
+            const toast = document.getElementById('form-toast');
+            const name = document.getElementById('form-name').value;
+            const email = document.getElementById('form-email').value;
+            const subject = document.getElementById('form-subject').value;
+            const message = document.getElementById('form-message').value;
+
+            // Success feedback setup
+            toast.classList.remove('hidden', 'bg-red-500/10', 'border-red-500/30', 'text-red-400', 'bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+            toast.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <div><strong>Success!</strong> Message sent safely. Thanks, ${name}. I will connect shortly!</div>`;
+            
+            // Clear inputs
+            document.getElementById('contact-form').reset();
+        }
+
+        // 5. Live AI Chat Agent System powered by Gemini API
+        const chatToggleBtn = document.getElementById('chat-toggle-btn');
+        const chatBox = document.getElementById('chat-box');
+        const chatCloseBtn = document.getElementById('chat-close-btn');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+
+        // Toggle chat state
+        chatToggleBtn.addEventListener('click', () => {
+            chatBox.classList.toggle('hidden');
+        });
+        chatCloseBtn.addEventListener('click', () => {
+            chatBox.classList.add('hidden');
+        });
+
+        // Handle typing submission
+        chatSendBtn.addEventListener('click', () => {
+            const val = chatInput.value.trim();
+            if (val) {
+                askGeminiAgent(val);
+                chatInput.value = '';
+            }
+        });
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const val = chatInput.value.trim();
+                if (val) {
+                    askGeminiAgent(val);
+                    chatInput.value = '';
+                }
+            }
+        });
+
+        // Comprehensive resume dataset in the system prompt for accurate representation
+        const agentSystemInstruction = `
+            You are the dedicated live AI Career Agent representing Imran Ali. 
+            Imran Ali is a professional Full Stack Software and AI Engineer based in Karachi, Pakistan (+92-3042576124, imran.ali313924@gmail.com).
+            Answer questions professionally, enthusiastically, and as his representative. Keep responses engaging and concise (max 3-4 paragraphs).
+
+            Imran's Credentials:
+            - CURRENT JOB: Computer Science Lecturer at Millennium Institute of Technology and Entrepreneurship (MiTE), Karachi.
+            - Lecturer (Full-time) at Mohammad Ali Jinnah University (MAJU), Karachi since Feb 2024.
+            - Visiting Faculty at SZABIST, Karachi.
+            - Machine Learning & MERN-Stack Instructor at NAVTTC.
+            - Former Part-Time Software Engineer at The Software House (Next.js/Redux/Docker/AWS).
+            
+            Education:
+            - MS in Computer Science (Sept 2023 - June 2025) from Mohammad Ali Jinnah University (MAJU).
+            - BS in Computer Science (Aug 2018 - Sept 2023) from Sukkur IBA University, Sukkur.
+
+            Skills:
+            - Programming: JavaScript, TypeScript, Python, Java, C++, C#, Solidity
+            - Web: React.js, Next.js, HTML, CSS, Tailwind, Redux, Node.js, Express.js, GraphQL, REST APIs
+            - Databases: MongoDB, MySQL, PostgreSQL, Firebase, Redis
+            - AI/ML: TensorFlow, Keras, Scikit-learn, PyTorch, OpenCV, ChatGPT integration
+            - Cloud: AWS, Google Cloud, Docker, Kubernetes, CI/CD
+
+            Key Projects:
+            - Urdu Fake News Detector: ML/DL system verifying misinformation in Urdu articles.
+            - Real-Time Chat App: Firebase & Java mobile suite.
+            - On-Chain KYC Verification: Solidity contracts & React web app.
+            - Face Mask Detection & Gesture Light Automation.
+
+            Publications:
+            - "Security and Privacy Challenges in 5G Networks" (ICBMC Journal, April 2025).
+            - Ongoing research on ML Intrusion Detection Benchmarking for Secure Drone Deliveries in Remote Terrains.
+
+            Social Profiles:
+            - GitHub: https://github.com/imran-Ali11
+            - LinkedIn: https://www.linkedin.com/in/imran-ali-665964214/
+            - WhatsApp: https://wa.me/923042576124
+        `;
+
+        async function askGeminiAgent(question) {
+            // Append User msg bubble
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex justify-end";
+            userMsg.innerHTML = `<div class="p-2 bg-blue-600 rounded-lg text-white max-w-[80%]">${question}</div>`;
+            chatMessages.appendChild(userMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Loading indicators
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = "flex items-start space-x-2";
+            loadingBubble.id = "agent-loading";
+            loadingBubble.innerHTML = `<div class="p-2 bg-purple-900/30 rounded-lg text-slate-400 max-w-[85%] flex items-center gap-2"><i class="fa-solid fa-spinner animate-spin"></i> Analyzing resume & drafting response...</div>`;
+            chatMessages.appendChild(loadingBubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                let response = "";
+                if (apiKey) {
+                    response = await callGemini(question, agentSystemInstruction);
+                } else {
+                    // Smart Offline Fallback if preview lacks API key runtime
+                    response = getOfflineFallbackResponse(question);
+                }
+                
+                document.getElementById('agent-loading').remove();
+                
+                const agentMsg = document.createElement('div');
+                agentMsg.className = "flex items-start space-x-2";
+                agentMsg.innerHTML = `<div class="p-2 bg-purple-900/30 rounded-lg text-slate-300 max-w-[85%] whitespace-pre-line">${response}</div>`;
+                chatMessages.appendChild(agentMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } catch (err) {
+                document.getElementById('agent-loading').remove();
+                const errorMsg = document.createElement('div');
+                errorMsg.className = "flex items-start space-x-2";
+                errorMsg.innerHTML = `<div class="p-2 bg-red-950/40 border border-red-500/20 text-red-400 rounded-lg text-xs">Sorry, could not connect to Imran's agent. Please call directly at +923042576124!</div>`;
+                chatMessages.appendChild(errorMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Multi-tier heuristic fallback database
+        function getOfflineFallbackResponse(question) {
+            const q = question.toLowerCase();
+            const fallbackDB = {
+                skills: "Imran's technical expertise covers multiple pillars:\n\n- Programming: JavaScript, TypeScript, Python, Java, C++, C#, Solidity\n- Web Dev: React.js, Next.js, HTML, CSS, Tailwind CSS, Redux, Material UI\n- Backend: Node.js, Express.js, REST APIs, GraphQL, Databases (MongoDB, Firebase, MySQL, PostgreSQL, Redis)\n- AI/ML: TensorFlow, Keras, Scikit-learn, PyTorch, OpenCV\n- DevOps/Cloud: AWS, GCP, Azure, Docker, Kubernetes, CI/CD",
+                education: "Imran completed his academic journey with excellence:\n\n- MS in Computer Science (Sept 2023 - Jun 2025) from Mohammad Ali Jinnah University (MAJU), Karachi.\n- BS in Computer Science (Aug 2018 - Sept 2023) from Sukkur IBA University, Sukkur.",
+                projects: "Key featured projects:\n\n1. Fake News Detection: Machine Learning models to identify Urdu misinformation (2025).\n2. On-Chain KYC Verification: Smart contracts using Solidity and React (2023).\n3. Real-Time Chat App: Firebase and Java powered messaging suite (2022).\n4. OpenCV Mask Recognition & Gesture Light system.",
+                publications: "Imran is an active academic author:\n\n- 'Security and Privacy Challenges in 5G Networks' (ICBMC Journal, April 2025).\n- Ongoing Research: Benchmarking ML algorithms on the CIC-IDS2017 framework to secure drone delivery systems in remote terrains.",
+                lectures: "Imran is actively educating in these institutions:\n\n- Computer Science Lecturer at the Millennium Institute of Technology and Entrepreneurship (MiTE).\n- Lecturer (Full-time) at Mohammad Ali Jinnah University (MAJU) since Feb 2024.\n- Visiting Faculty at SZABIST, Karachi.\n- Machine Learning & MERN-Stack Instructor at NAVTTC.",
+                contact: "You can reach Imran via:\n\n- Gmail: imran.ali313924@gmail.com\n- WhatsApp/Cell: +923042576124\n- GitHub: https://github.com/imran-Ali11\n- LinkedIn: https://www.linkedin.com/in/imran-ali-665964214/"
+            };
+
+            if (q.includes('skill') || q.includes('tech') || q.includes('stack') || q.includes('programming') || q.includes('language')) return fallbackDB.skills;
+            if (q.includes('education') || q.includes('university') || q.includes('study') || q.includes('school') || q.includes('degree')) return fallbackDB.education;
+            if (q.includes('project') || q.includes('build') || q.includes('code') || q.includes('fake news') || q.includes('chat')) return fallbackDB.projects;
+            if (q.includes('publication') || q.includes('research') || q.includes('paper') || q.includes('journal') || q.includes('5g') || q.includes('drone')) return fallbackDB.publications;
+            if (q.includes('lecture') || q.includes('teach') || q.includes('class') || q.includes('maju') || q.includes('navttc') || q.includes('szabist') || q.includes('mite') || q.includes('millennium') || q.includes('faculty') || q.includes('job')) return fallbackDB.lectures;
+            return fallbackDB.contact;
+        }
+
+        // 5b. ✨ AI Matchmaker Proposal Generator Integration
+        async function generateAIMatchmakerProposal() {
+            const industry = document.getElementById('matchmaker-industry').value;
+            const concept = document.getElementById('matchmaker-concept').value.trim();
+            const resultBox = document.getElementById('matchmaker-result-box');
+            const resultText = document.getElementById('matchmaker-result-text');
+            const spinner = document.getElementById('matchmaker-spinner');
+
+            if (!concept) {
+                resultBox.classList.remove('hidden');
+                resultText.innerHTML = "⚠️ Please describe your system idea first so Imran's agent can generate a custom technical blueprint.";
+                return;
+            }
+
+            resultBox.classList.remove('hidden');
+            resultText.innerHTML = "Contacting Gemini API and analyzing custom solution paths...";
+            spinner.classList.remove('hidden');
+
+            const matchmakerSystemInstruction = `
+                You are Imran's Technical Solutions Architect AI.
+                Review the user's project concept and industry selection, then generate a custom technology integration proposal.
+                Showcase how Imran's specific skill sets (MERN stack, Python, TensorFlow, security protocols, cloud systems) can solve their exact request.
+                Format the answer with clear headings:
+                - Proposed System Architecture
+                - Key Imran Ali Skills Leveraged
+                - Estimated Development Phases
+                - Why Imran is the ideal engineer to build this
+                Keep responses highly practical, technical, and limited to 200-300 words.
+            `;
+
+            const userPrompt = `Industry Selection: ${industry}\nProject Concept: ${concept}`;
+
+            try {
+                let text = "";
+                if (apiKey) {
+                    text = await callGemini(userPrompt, matchmakerSystemInstruction);
+                } else {
+                    // Intelligent mockup response for local/offline developer viewing
+                    text = `### Proposed System Architecture\n- **Client Layer**: Responsive MERN Single Page Application (React / Tailwind) for mobile & web.\n- **AI Pipeline Layer**: Convolutional Neural Networks built using **TensorFlow/PyTorch** processing inputs via **OpenCV** logic.\n- **API Backend**: Containerized Node.js/Express service utilizing JSON Web Tokens (JWT) for secure authentication, storing audit data on MongoDB.\n\n### Key Imran Ali Skills Leveraged\n- **Deep Learning Expertise**: Leveraging TensorFlow modeling to execute automated validation checks.\n- **Full-Stack Development**: Constructing clean, performant backends with structured schemas (Express/Mongoose).\n\n### Why Imran is the ideal engineer to build this\nAs a Computer Science Lecturer at **MiTE & MAJU** with a Master of Science background and published research on security and networking, Imran understands both high-performance neural architecture and secure, hardened web backends.`;
+                }
+
+                spinner.classList.add('hidden');
+                resultText.textContent = text;
+            } catch (err) {
+                spinner.classList.add('hidden');
+                resultText.textContent = "Unable to generate custom blueprint. Please connect with Imran directly via email: imran.ali313924@gmail.com";
+            }
+        }
+
+        // 6. ThreeJS Neural network background (Adaptive Canvas width & height)
+        let backgroundRenderer, backgroundScene, backgroundCamera, particlesSystem;
+        let mouseX = 0, mouseY = 0;
+
+        function initThreeBackground() {
+            const canvas = document.getElementById('three-bg');
+            backgroundRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            backgroundRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            backgroundRenderer.setSize(window.innerWidth, window.innerHeight);
+
+            backgroundScene = new THREE.Scene();
+            backgroundCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            backgroundCamera.position.z = 250;
+
+            // Neural System Node Particles
+            const count = 150;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 500;
+                positions[i + 1] = (Math.random() - 0.5) * 500;
+                positions[i + 2] = (Math.random() - 0.5) * 500;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            // Particle Material setup
+            const pMaterial = new THREE.PointsMaterial({
+                color: 0x3b82f6,
+                size: 4,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            particlesSystem = new THREE.Points(geometry, pMaterial);
+            backgroundScene.add(particlesSystem);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            backgroundScene.add(ambientLight);
+
+            // Frame Animation Cycle
+            function animate() {
+                requestAnimationFrame(animate);
+
+                particlesSystem.rotation.y += 0.001;
+                particlesSystem.rotation.x += 0.0005;
+
+                // Subtle cursor reaction
+                particlesSystem.position.x += (mouseX * 0.05 - particlesSystem.position.x) * 0.05;
+                particlesSystem.position.y += (-mouseY * 0.05 - particlesSystem.position.y) * 0.05;
+
+                backgroundRenderer.render(backgroundScene, backgroundCamera);
+            }
+            animate();
+        }
+
+        // 7. Interactive ThreeJS Skill Sphere
+        let skillRenderer, skillScene, skillCamera, skillGroup;
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+
+        function initThreeSkillSphere() {
+            const canvas = document.getElementById('skill-sphere-canvas');
+            const rect = canvas.parentNode.getBoundingClientRect();
+            
+            skillRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            skillRenderer.setSize(rect.width, 240);
+            skillRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            skillScene = new THREE.Scene();
+            skillCamera = new THREE.PerspectiveCamera(45, rect.width / 240, 0.1, 1000);
+            skillCamera.position.z = 15;
+
+            skillGroup = new THREE.Group();
+            skillScene.add(skillGroup);
+
+            // Outer floating ring
+            const ringGeom = new THREE.TorusGeometry(5, 0.05, 8, 64);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.25 });
+            const ringMesh = new THREE.Mesh(ringGeom, ringMat);
+            skillGroup.add(ringMesh);
+
+            // Core mesh sphere wireframe
+            const sphereGeom = new THREE.IcosahedronGeometry(4, 1);
+            const sphereMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.15 });
+            const sphereMesh = new THREE.Mesh(sphereGeom, sphereMat);
+            skillGroup.add(sphereMesh);
+
+            // Create little interactive nodes (representing technologies)
+            const techPositions = [
+                { name: 'React', pos: [3.5, 1, 1], color: 0x60a5fa },
+                { name: 'Python', pos: [-3.5, -1, 1], color: 0xfacc15 },
+                { name: 'TF', pos: [1, 3.5, -1], color: 0xf97316 },
+                { name: 'Node', pos: [-1, -3.5, -1], color: 0x22c55e },
+                { name: 'AWS', pos: [2, -2, 3], color: 0x3b82f6 },
+                { name: 'Docker', pos: [-2, 2, -3], color: 0x06b6d4 },
+                { name: 'Solidity', pos: [0, 1, -4], color: 0x8b5cf6 }
+            ];
+
+            techPositions.forEach(tech => {
+                const nodeGeom = new THREE.SphereGeometry(0.3, 16, 16);
+                const nodeMat = new THREE.MeshBasicMaterial({ color: tech.color });
+                const nodeMesh = new THREE.Mesh(nodeGeom, nodeMat);
+                nodeMesh.position.set(...tech.pos);
+                skillGroup.add(nodeMesh);
+            });
+
+            // Lighting setup
+            const light = new THREE.PointLight(0xffffff, 1, 100);
+            light.position.set(10, 10, 10);
+            skillScene.add(light);
+
+            // Drag handler logic
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+
+                if (isDragging) {
+                    const deltaRotationQuaternion = new THREE.Quaternion()
+                        .setFromEuler(new THREE.Euler(
+                            deltaMove.y * (Math.PI / 180) * 0.5,
+                            deltaMove.x * (Math.PI / 180) * 0.5,
+                            0,
+                            'XYZ'
+                        ));
+                    
+                    skillGroup.quaternion.multiplyQuaternions(deltaRotationQuaternion, skillGroup.quaternion);
+                }
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            // Touch support for dragging skill sphere
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1) {
+                    const deltaMove = {
+                        x: e.touches[0].clientX - previousMousePosition.x,
+                        y: e.touches[0].clientY - previousMousePosition.y
+                    };
+
+                    const deltaRotationQuaternion = new THREE.Quaternion()
+                        .setFromEuler(new THREE.Euler(
+                            deltaMove.y * (Math.PI / 180) * 0.5,
+                            deltaMove.x * (Math.PI / 180) * 0.5,
+                            0,
+                            'XYZ'
+                        ));
+                    
+                    skillGroup.quaternion.multiplyQuaternions(deltaRotationQuaternion, skillGroup.quaternion);
+                    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            });
+
+            canvas.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+
+            // Run Loop
+            function render() {
+                requestAnimationFrame(render);
+                if (!isDragging) {
+                    skillGroup.rotation.y += 0.005;
+                }
+                skillRenderer.render(skillScene, skillCamera);
+            }
+            render();
+        }
+
+        // Global Mouse tracker for background interactivity
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2);
+            mouseY = (e.clientY - window.innerHeight / 2);
+        });
+
+        // Track and redraw canvases on resizing window viewport
+        window.addEventListener('resize', () => {
+            if (backgroundCamera && backgroundRenderer) {
+                backgroundCamera.aspect = window.innerWidth / window.innerHeight;
+                backgroundCamera.updateProjectionMatrix();
+                backgroundRenderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            if (skillCamera && skillRenderer) {
+                const canvas = document.getElementById('skill-sphere-canvas');
+                const rect = canvas.parentNode.getBoundingClientRect();
+                skillCamera.aspect = rect.width / 240;
+                skillCamera.updateProjectionMatrix();
+                skillRenderer.setSize(rect.width, 240);
+            }
+        });
+
+    </script>
+</body>
+</html>
